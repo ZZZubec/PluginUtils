@@ -32,6 +32,12 @@ public class FileConfig
         this.log = log;
     }
     
+    public void readFromFile( String filename )
+    {
+    	File f = new File( filename );
+    	readFromFile( f );
+    }
+    
     public void readFromFile( File f )
     {
         try
