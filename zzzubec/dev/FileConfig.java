@@ -1,13 +1,16 @@
 package zzzubec.dev;
+
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * create by ZZZubec
+ * @modifed: 14/05/2012
  */
 
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -23,6 +26,7 @@ public class FileConfig
 {
     private Vector<String> keys = new Vector<String>();
     private Vector<String> values = new Vector<String>();
+    private Vector<String> descs = new Vector<String>();
     private JavaPlugin main;
     private static LogSystem log;
     //
@@ -32,13 +36,22 @@ public class FileConfig
         this.log = log;
     }
     
-    public void readFromFile( String filename )
+    public void addKeyValue( String key, String value, String desc )
     {
-    	File f = new File( filename );
-    	readFromFile( f );
+    	keys.add( key );
+        values.add( value );
+        descs.add( desc );
     }
     
-    public void readFromFile( File f )
+    public boolean readFromFile( String pluginFolder, String filename )
+    {
+    	File f = new File( pluginFolder );
+    	f.mkdirs();
+    	f = new File( pluginFolder + "/" + filename );
+    	return readFromFile( f );
+    }
+    
+    public boolean readFromFile( File f )
     {
         try
         {
@@ -55,11 +68,39 @@ public class FileConfig
                     values.add( args[1].trim() );
                     System.out.println( "[" + args[0].trim() + "]=" + args[1].trim() + ";" );
                 }
+                else
+                	descs.add( line.substring( 2, line.length() ) );
             }
             in.close();
         } catch( IOException e ) {
             log.warnMessage( "ConfigFile:readFromFile", "Error read config file" );
+            return false;
         }
+        return true;
+        
+    }
+   
+    public boolean writeToFile( String pluginFolder, String filename )
+    {
+    	File f = new File( pluginFolder );
+    	f.mkdirs();
+        try{
+    		  // Create file 
+    		  FileWriter fstream = new FileWriter( pluginFolder + "/" + filename );
+    		  BufferedWriter out = new BufferedWriter(fstream);
+    		  for( int i=0; i < keys.size(); i++ )
+    		  {
+    			  out.write( "//" + descs.get( i ) + "\r\n" );
+    			  out.write( keys.get( i ) + ": " + values.get( i ) + "\r\n" );
+    		  }
+    		  //Close the output stream
+    		  out.close();
+    		  log.showMessage( "FileConfig:writeToFile", "Configuration file save" );
+        }catch (Exception e){//Catch exception if any
+        	log.errorMessage( "FileConfig:writeToFile", e.getMessage());
+        	return false;
+        }
+        return true;
         
     }
     

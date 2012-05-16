@@ -4,6 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 /*
  * create by ZZZubec
+ * @modifed: 14/05/2012
  */
 
 public class LogSystem
