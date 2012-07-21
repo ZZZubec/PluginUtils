@@ -1,5 +1,9 @@
 package zzzubec.dev;
 
+import java.util.logging.Logger;
+
+import jline.internal.Log.Level;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 /*
@@ -11,6 +15,7 @@ public class LogSystem
 {
 	private static JavaPlugin main;
 	public int debug = 0;
+	private static Logger log_console = Logger.getLogger( "Minecraft" );
 	/*
 	 * 0 - only errors
 	 * 1 - errors & warnings
@@ -47,7 +52,12 @@ public class LogSystem
 		
 		if( debug >= deb )
 		{
-				System.out.println( "[" + main.getDescription().getName() + "]: " + function + "->" + str );
+			String message = "[" + main.getDescription().getName() + "]: " + function + "->" + str;
+			System.out.println( msg + " " + message );
+			
+			if( deb == 0 ) log_console.log( java.util.logging.Level.WARNING, message );
+			if( deb == 1 ) log_console.warning( message );
+			if( deb == 2 ) log_console.info( message );
 		}
 	}
 
