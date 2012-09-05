@@ -28,9 +28,6 @@ background: url("image/ico_sale.png") no-repeat scroll center center transparent
 html body div#container div#content div#footer div.cent div.box div.box-content div.box-product div div.cart input.button {
     display:none;
 }
-html body div#topcontrol {
-    right: 45px!important;
-}
 h1, .welcome {
 	color: #2E2E2E;
 	font-family: Verdana;
@@ -101,7 +98,7 @@ label {
 	text-align: center;
 }
 #column-left {
-width: 210px;
+width: 180px;
 float: left;
 }
 html body div#container div#content div.contentcenter div#column-left div.box {
@@ -416,16 +413,6 @@ box-shadow:         0px 5px 8px rgba(19, 0, 63, 0.5);
 	list-style: none;
 	margin: 0;
 	padding: 0;
-}
-div#menu div#centrmenu > ul > li > ul {
-    display: none;
-}
-#menu div#centrmenu > ul > li{
-	position: relative;
-	float: left;
-	z-index: 20;	
-	padding: 7px 5px 5px 5px;
-    background: url('image/social_l.png') -3px center no-repeat;
 }
 
 #menu div#centrmenu > ul > li:first-child {
@@ -1068,18 +1055,13 @@ html body div#container div#content div.contentcenter div.slid div.box div.box-c
 	float: right;
 	width: 49%;
 }
-div.box-heading {
-    font-size: 15px;
-    font-weight: 700;
-    text-align: center;
-}
 /* category */
 .category-info {
     left: 40px;
     margin-bottom: 20px;
     overflow: auto;
     position: relative;
-    width: 735px;
+    width: 765px;
    text-align: left;
     
 }
@@ -1623,7 +1605,6 @@ html body div#container div.cen div#content div#content div.contentcenter div.pr
 	border-left: 1px solid #E7E7E7;
 	border-right: 1px solid #E7E7E7;
 	margin-bottom: 10px;
-    width: 90%;
 }
 .product-info .review > div {
 	padding: 8px;
@@ -2106,12 +2087,9 @@ background-position:left bottom;
 clear: both;
 height: 340px;    
 }
-.boxprivet {
-    margin-top: 75px;
-    text-align: justify;
-}
 .footer-bg {
  border: 1px solid #DBDBDB;
+    height: 270px;
     margin-left: auto;
     margin-right: auto;
     width: 1010px;
@@ -2280,7 +2258,16 @@ html body div#container div#content div#footer div.cent div#carousel1 {
 box-shadow:         0px 0px 12px rgba(26, 0, 63, 0.76);    
     
 }
-div#menu div#centrmenu > ul > li:hover > ul   {
+
+#menu div#centrmenu > ul > li{
+	position: relative;
+	float: left;
+	z-index: 20;	
+	padding: 7px 5px 5px 5px;
+    background: url('image/social_l.png') -3px center no-repeat;
+}
+
+div#menu div#centrmenu > ul > li:hover > div  {
 display: block;
 z-index: 5;
 padding: 5px;
@@ -2289,8 +2276,8 @@ background: #f0f0f0;
 -moz-box-shadow:    0px 10px 5px rgba(50, 50, 50, 0.75);
 box-shadow:         0px 10px 5px rgba(50, 50, 50, 0.75);
 border-top: 1px solid #555555;
-position: absolute;
 border-radius:0px 0px 5px 5px;
+position: absolute;
 }
 div#menu div#centrmenu > ul .activeparent {
     color: #595959;
@@ -2324,6 +2311,25 @@ div#menu div#centrmenu > ul > li > ul > li > ul {
     margin-left: -10px;
 }
 
+div#menu div#centrmenu ul li div ul li
+{
+	display: table-cell;
+}
 
+div#menu div#centrmenu ul li div ul li ul li
+{
+	float: none;
+	display: block;
+}
 
-
+div#menu div#centrmenu ul li div
+{
+	display: none;
+	position: absolute;
+	top: 42px;
+	left: 0px;
+}
+div#menu div#centrmenu ul li div ul
+{
+	display: table-cell;
+}
