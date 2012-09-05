@@ -13,7 +13,6 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Vector;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,8 +26,9 @@ public class FileConfig
     private Vector<String> keys = new Vector<String>();
     private Vector<String> values = new Vector<String>();
     private Vector<String> descs = new Vector<String>();
+    @SuppressWarnings("unused")
     private JavaPlugin main;
-    private static LogSystem log;
+    private LogSystem log;
     //
     public FileConfig( JavaPlugin ch, LogSystem log )
     {
@@ -41,6 +41,18 @@ public class FileConfig
     	keys.add( key );
         values.add( value );
         descs.add( desc );
+    }
+    
+    public void setValue( String key, String value )
+    {
+        for( int i = 0; i < keys.size(); i++ )
+        {
+            if( keys.elementAt(i).equals(key) )
+            {
+                values.setElementAt( value, i );
+                return;
+            }
+        }
     }
     
     public boolean readFromFile( String pluginFolder, String filename )
