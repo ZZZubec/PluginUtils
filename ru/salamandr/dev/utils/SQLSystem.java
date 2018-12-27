@@ -5,60 +5,68 @@
  */
 package ru.salamandr.dev.utils;
 
-import java.sql.*;
-
-import ru.salamandr.dev.utils.LogSystem;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class SQLSystem
 {
-    private LogSystem log;
-    private Statement sql;
+    public Statement statement;
 
     private DataBaseConfig db;
-
-    private Connection conn = null;
 
 
     public EnumSQL sqlType = EnumSQL.SQLLite;
 
-	public enum EnumSQL
+    /*
+    public int getInstertID() {
+        ResultSet rs = query("SELECT LAST_INSERT_ID();");
+        try {
+            while (rs != null && rs.next()) {
+                return rs.getInt(0);
+            }
+        } catch (SQLException ex) {
+            LogSystem.getInstance().errorMessage(this.getClass().getSimpleName(), "connectSQL->SQLException", ex.getMessage());
+        }
+        return -1;
+    }
+    */
+
+    public enum EnumSQL
 	{
 		SQLLite, MySQL;
 	}
 
-    public SQLSystem( LogSystem log, DataBaseConfig db, EnumSQL type )
+    public SQLSystem( DataBaseConfig db, EnumSQL type )
     {
-        this.log = log;
         this.db = db;
         this.sqlType = type;
     }
 
     public boolean connectSQL()
     {
+        Connection conn = null;
         try
 		{
-		    log.showMessage( this.getClass().getSimpleName(), "connectSQL", "initialize" );
+            LogSystem.getInstance().showMessage( this.getClass().getSimpleName(), "connectSQL", "initialize" );
             if( sqlType == EnumSQL.SQLLite )
             {
-            	Class.forName("org.sqlite.JDBC");
-                conn = DriverManager.getConnection("jdbc:sqlite:" + this.db.file );
-                sql = conn.createStatement();
-                if( sql != null )
+            	conn = DriverManager.getConnection("jdbc:sqlite:" + this.db.file );
+                statement = conn.createStatement();
+                if( statement != null )
                     return true;
             }
             else
             {
-            	Class.forName("org.gjt.mm.mysql.Driver");
                 conn = DriverManager.getConnection("jdbc:mysql://" + this.db.host + ":" + this.db.port + "/" + this.db.name, this.db.username, this.db.password );
-                sql = conn.createStatement();
-                if( sql != null )
+                statement = conn.createStatement();
+                if( statement != null )
                     return true;
             }
 		} catch (SQLException e) {
-		    log.errorMessage( this.getClass().getSimpleName(), "connectSQL->SQLException", e.getMessage() );
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-		    log.errorMessage( this.getClass().getSimpleName(), "connectSQL->Exception", e.getMessage() );
+            LogSystem.getInstance().errorMessage( this.getClass().getSimpleName(), "connectSQL->SQLException", e.getMessage() );
 			e.printStackTrace();
 		}
         return false;
@@ -68,17 +76,17 @@ public class SQLSystem
     {
         ResultSet rs = null;
 
-        if( sql == null )
+        if( statement == null )
         {
             if( !this.connectSQL() ) return rs;
         }
 
         try
         {
-            log.showMessage( this.getClass().getSimpleName(), "SQLSystem->query", query );
-            return sql.executeQuery( query );
+            LogSystem.getInstance().showMessage( this.getClass().getSimpleName(), "SQLSystem->query", query );
+            return statement.executeQuery( query );
         } catch (SQLException e) {
-            log.errorMessage( this.getClass().getSimpleName(), "SQLSystem->query", e.getMessage() );
+            LogSystem.getInstance().errorMessage( this.getClass().getSimpleName(), "SQLSystem->query", e.getMessage() );
 			e.printStackTrace();
         }
         return rs;
@@ -86,18 +94,18 @@ public class SQLSystem
 
     public boolean update( String query )
     {
-        if( sql == null )
+        if( statement == null )
         {
             if( !this.connectSQL() ) return false;
         }
 
         try
         {
-            log.showMessage( this.getClass().getSimpleName(), "SQLSystem->update", query );
-            sql.executeUpdate( query );
+            LogSystem.getInstance().showMessage( this.getClass().getSimpleName(), "SQLSystem->update", query );
+            statement.executeUpdate( query );
             return true;
         } catch (SQLException e) {
-            log.errorMessage( this.getClass().getSimpleName(), "SQLSystem->query", e.getMessage() );
+            LogSystem.getInstance().errorMessage( this.getClass().getSimpleName(), "SQLSystem->query", e.getMessage() );
 			e.printStackTrace();
         }
         return false;
@@ -106,21 +114,10 @@ public class SQLSystem
 	public void close() {
 		// TODO Auto-generated method stub
 		try {
-			sql.close();
+			statement.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
-	public Connection getConnection() {
-        return conn;
-    }
-
-    public ResultSet getGeneratedKeys() throws SQLException {
-        ResultSet getGeneratedKeys = sql.getGeneratedKeys();
-        if (getGeneratedKeys == null)
-            getGeneratedKeys = conn.prepareStatement( "select last_insert_rowid();").executeQuery();
-        return getGeneratedKeys;
-    }
 }

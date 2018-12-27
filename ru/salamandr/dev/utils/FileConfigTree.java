@@ -6,8 +6,6 @@ import java.util.List;
 
 public class FileConfigTree extends FileConfig {
 
-    final String version = "1.0.1";
-
 	int tabstep = 2;
 	public EnumConfig configType = EnumConfig.TREE;
 
@@ -17,9 +15,9 @@ public class FileConfigTree extends FileConfig {
 		TREE;
 	}
 
-	public FileConfigTree(LogSystem log)
+	public FileConfigTree()
 	{
-		super(log);
+		super();
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -63,7 +61,7 @@ public class FileConfigTree extends FileConfig {
 
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
-                    log.errorMessage( this.getClass().getName(), "loadFromFileJAR", e.getMessage() );
+                    LogSystem.getInstance().errorMessage( this.getClass().getName(), "loadFromFileJAR", e.getMessage() );
                     System.out.println( ">>>read language error: " );
                     e.printStackTrace();
                 }
@@ -256,7 +254,7 @@ public class FileConfigTree extends FileConfig {
 	            }
 	            in.close();
 	        } catch( IOException e ) {
-	            log.warnMessage( null, "ConfigFile:readFromFile", "Error read config file" );
+                LogSystem.getInstance().warnMessage( null, "ConfigFile:readFromFile", "Error read config file" );
 	            e.printStackTrace();
 	            return false;
 	        }
@@ -309,7 +307,6 @@ public class FileConfigTree extends FileConfig {
 			return super.writeToFile( pluginFolder, filename );
 		else
 		{
-			System.out.println( "write config to file" );
 			File f = new File( pluginFolder );
 	    	f.mkdirs();
             String[] val = null;
@@ -321,92 +318,81 @@ public class FileConfigTree extends FileConfig {
 	    		  boolean is_first = true;
 	    		  boolean is_List = false;
 	    		  String path = "";
-	    		  for( int i=0; i < keys.size(); i++ )
-	    		  {
-    				  is_List = false;
-	    			  String[] cols = keys.get(i).split( "\\." );
-	    			  //System.out.println( i+") " + keys.get(i) );
-	    			  //System.out.println( "---level (cols): " + cols.length );
-	    			  path = getPath( cols );
-	    			  //System.out.println( "---path: " + current_path + "|" + path );
-	    			  if( !current_path.equals( path ) )
-	    			  {
-	    				  is_first = true;
-	    				  is_List = false;
-	    				  //out.write( writePath( path ) );
-	    				  //current_path = path;
-	    			  }
-	    			  
-	    			  //Если следующие значение по этому же пути, то
-	    			  //System.out.println( "---first: " + is_first + "| list:" + is_List );
-	    			  if( (i+1 < keys.size() && keys.get(i+1).equals(keys.get(i))) || (i>0 && keys.get(i-1).equals(keys.get(i)) ) )
-	    				  is_List = true;
-	    			  
-	    			  //System.out.println( "---first: " + is_first + "| list:" + is_List );
-	    			  if( !is_List && values.get(i) != null && values.get(i).split( "\\," ).length > 1 )
-	    			  {
-	    				  is_List = true;
-	    			  }
-	    			  
-	    			  //System.out.println( "---first: " + is_first + "| list:" + is_List );
+	    		  for( int i=0; i < keys.size(); i++ ) {
+                      is_List = false;
+                      String[] cols = keys.get(i).split("\\.");
+                      //System.out.println( i+") " + keys.get(i) );
+                      //System.out.println( "---level (cols): " + cols.length );
+                      path = getPath(cols);
+                      //System.out.println( "---path: " + current_path + "|" + path );
+                      if (!current_path.equals(path)) {
+                          is_first = true;
+                          is_List = false;
+                          //out.write( writePath( path ) );
+                          //current_path = path;
+                      }
 
-	    			  if( is_List )
-	    			  {
-	    				  //Это список
-	    				  
-	    				  if( !current_path.equals( path ) )
-		    				  out.write( writePath( path ) );
+                      //Если следующие значение по этому же пути, то
+                      //System.out.println( "---first: " + is_first + "| list:" + is_List );
+                      if ((i + 1 < keys.size() && keys.get(i + 1).equals(keys.get(i))) || (i > 0 && keys.get(i - 1).equals(keys.get(i))))
+                          is_List = true;
 
-	    				  if( is_first )
-	    				  {
-	    					  //Это самое первое значение списка
-	    					  if( cols.length > 1 )
-	    					  {
-	    						  if( values.get(i).split( "\\," ).length > 1 || is_List )
-	    							  out.write( getSpaces( cols.length ) + cols[cols.length-1] + ":\r\n" );
-	    						  else
-	    							  out.write( getSpaces( cols.length ) + cols[cols.length-1] + ":" );
-	    					  }
-	    					  is_first = false;
-	    				  }
-	    				  if( values.get(i).split( "\\," ).length > 1 )
-	    				  {
-	    					  //System.out.println( "---values is list: " + values.get(i) + "|length: " + values.get(i).split(",").length );
-	    					  String[] v = values.get(i).split( "\\," );
-	    					  for( int vl = 0; vl < v.length; vl++ )
-	    						  out.write( getSpaces( cols.length+1 ) + v[vl].trim() + " //" + descs.get( i ) + "\r\n" );
-	    				  }
-	    				  else
-	    				  {
-	    					  if( is_List )
-	    						  out.write( getSpaces( cols.length+1 ) + values.get( i ) + " //" + descs.get( i ) + "\r\n" );
-	    					  else
-	    						  out.write( getSpaces( cols.length ) + values.get( i ) + " //" + descs.get( i ) + "\r\n" );
-	    				  }
-	    			  }
-	    			  else
-	    			  {
-	    				  //Если значение не является частью списка
-	    				  if( !current_path.equals( path ) )
-	    					  out.write( writePath( path ) );
-	    				  
-	    				  out.write( getSpaces( cols.length ) + cols[cols.length-1] + ": " + values.get( i ) + " //" + descs.get( i ) + "\r\n" );
-	    			  }
-	    			  current_path = path;
-	    		  }
+                      //System.out.println( "---first: " + is_first + "| list:" + is_List );
+                      if (!is_List && values.get(i) != null && values.get(i).split("\\,").length > 1) {
+                          is_List = true;
+                      }
+
+                      //System.out.println( "---first: " + is_first + "| list:" + is_List );
+
+                      if (is_List) {
+                          //Это список
+
+                          if (!current_path.equals(path))
+                              out.write(writePath(path));
+
+                          if (is_first) {
+                              //Это самое первое значение списка
+                              if (cols.length > 1) {
+                                  if (values.get(i).split("\\,").length > 1 || is_List)
+                                      out.write(getSpaces(cols.length) + cols[cols.length - 1] + ":\r\n");
+                                  else
+                                      out.write(getSpaces(cols.length) + cols[cols.length - 1] + ":");
+                              }
+                              is_first = false;
+                          }
+                          if (values.get(i).split("\\,").length > 1) {
+                              //System.out.println( "---values is list: " + values.get(i) + "|length: " + values.get(i).split(",").length );
+                              String[] v = values.get(i).split("\\,");
+                              for (int vl = 0; vl < v.length; vl++)
+                                  out.write(getSpaces(cols.length + 1) + v[vl].trim() + " //" + descs.get(i) + "\r\n");
+                          } else {
+                              if (is_List)
+                                  out.write(getSpaces(cols.length + 1) + values.get(i) + " //" + descs.get(i) + "\r\n");
+                              else
+                                  out.write(getSpaces(cols.length) + values.get(i) + " //" + descs.get(i) + "\r\n");
+                          }
+                      } else {
+                          //Если значение не является частью списка
+                          if (!current_path.equals(path))
+                              out.write(writePath(path));
+
+                          out.write(getSpaces(cols.length) + cols[cols.length - 1] + ": " + values.get(i) + " //" + descs.get(i) + "\r\n");
+                      }
+                      current_path = path;
+                  }
 	    		  //Close the output stream
 	    		  out.close();
 	    		  fstream.close();
-	    		  log.showMessage( null, "FileConfig:writeToFile", "Configuration file save" );
+	    		  LogSystem.getInstance().showMessage( this.getClass().getSimpleName(), "FileConfig:writeToFile", "Configuration file save" );
 	        } catch ( NullPointerException e ) {
-                log.errorMessage( null, "FileConfig:writeToFile", e.getMessage() );
+                LogSystem.getInstance().errorMessage( this.getClass().getSimpleName(), "FileConfig:writeToFile", e.getMessage() );
                 e.printStackTrace();
                 return false;
-            } catch (Exception e){//Catch exception if any
-	        	log.errorMessage( null, "FileConfig:writeToFile", e.getMessage() );
-	        	e.printStackTrace();
-	        	return false;
-	        }
+            } catch (Exception e) {//Catch exception if any
+                LogSystem.getInstance().errorMessage(this.getClass().getSimpleName(), "FileConfig:writeToFile", e.getMessage());
+                e.printStackTrace();
+                return false;
+            }
         }
         return true;
 	}

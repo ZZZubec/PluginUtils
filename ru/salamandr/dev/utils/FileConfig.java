@@ -30,11 +30,9 @@ public class FileConfig {
     protected Vector<String> keys = new Vector<String>();
     protected Vector<String> values = new Vector<String>();
     protected Vector<String> descs = new Vector<String>();
-    protected LogSystem log;
     //
-    public FileConfig( LogSystem log )
+    public FileConfig()
     {
-        this.log = log;
     }
     
     public void addKeyValue( String key, String value, String desc )
@@ -115,7 +113,7 @@ public class FileConfig {
             }
             in.close();
         } catch( IOException e ) {
-            log.warnMessage( this.getClass().getSimpleName(), "ConfigFile:readFromFile", "Error read config file" );
+            LogSystem.getInstance().warnMessage( this.getClass().getSimpleName(), "ConfigFile:readFromFile", "Error read config file" );
             return false;
         }
         return true;
@@ -139,9 +137,9 @@ public class FileConfig {
     		  //Close the output stream
     		  out.close();
     		  fstream.close();
-    		  log.showMessage( this.getClass().getSimpleName(), "FileConfig:writeToFile", "Configuration file save" );
+    		  LogSystem.getInstance().showMessage( this.getClass().getSimpleName(), "FileConfig:writeToFile", "Configuration file save" );
         }catch (Exception e){//Catch exception if any
-        	log.errorMessage( this.getClass().getSimpleName(), "FileConfig:writeToFile", e.getMessage());
+            LogSystem.getInstance().errorMessage( this.getClass().getSimpleName(), "FileConfig:writeToFile", e.getMessage());
         	return false;
         }
         return true;
@@ -154,7 +152,7 @@ public class FileConfig {
         {
             if( keys.elementAt(i).equals(key) )
             {
-                if( values.elementAt(i).equals( "yes" ) )
+                if( values.elementAt(i).toLowerCase().equals( "yes" ) )
                     return true;
                 else
                     return false;

@@ -8,12 +8,9 @@ import java.util.HashMap;
 
 public class Options {
 	
-	LogSystem log;
-	
 	public HashMap<String,String> values = new HashMap<String,String>();
 	
-	public Options(LogSystem log, String mod_config_file) {
-		this.log = log;
+	public Options(String mod_config_file) {
 		loadFromFile( mod_config_file );
 	}
 	
@@ -41,11 +38,6 @@ public class Options {
 			return def;
 	}
 	
-	public void loadFromFile( LogSystem log, String filename ) {
-		this.log = log;
-		loadFromFile( filename );
-	}
-	
 	public void loadFromFile( String filename ) {
 		
 		values.clear();
@@ -67,8 +59,7 @@ public class Options {
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				log.errorMessage( this.getClass().getName(), "loadFromFile", e.getMessage() );
-				System.out.println( ">>>read language error: " );
+				LogSystem.getInstance().errorMessage( this.getClass().getName(), "loadFromFile", e.getMessage() );
 				e.printStackTrace();
 			}
 		}

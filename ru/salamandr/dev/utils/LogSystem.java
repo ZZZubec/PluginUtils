@@ -19,15 +19,24 @@ public class LogSystem
 	public int debug = 1;
 	public boolean writeOut = true;
 	public static Logger log_console;
-	FileHandler fh;
+	public String prefix;
+
+	private FileHandler fh;
+
+	private static LogSystem instance;
 	/*
 	 * 0 - only errors
 	 * 1 - errors & warnings
 	 * 2 - all messages
 	 */
 
-	public LogSystem( String windowName, String fileName ) {
-        log_console = Logger.getLogger( windowName );
+    public static LogSystem getInstance() {
+        return instance;
+    }
+
+	public LogSystem( Logger log, String fileName ) {
+		instance = this;
+        log_console = log;
         try {
 			fh = new FileHandler( fileName );
 			log_console.addHandler(fh);
@@ -72,21 +81,28 @@ public class LogSystem
 		debugMessage( plugin, 0, function, str );
 	}
 
-	public String debugMessage( String plugin, int deb, String function, String message )
+	public String debugMessage( String plugin, int deb, String function, String str )
 	{
-		String msg = "debug";
+		String message = "";
+		if(prefix != null)
+		    message = "[" + prefix + "] ";
+		String msg = "";
 		if( deb == 0 )
-			msg += "!!!";
+			msg = "!!!";
 		if( deb == 1 )
-			msg += "???";
+			msg = "???";
 
 		if( debug >= deb )
 		{
+            Date d = new Date();
             //SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "hh:mm:ss" );
             //message = "{" + plugin + "}[" + msg + "] " + simpleDateFormat.format(d) + ": " + function + "->" + str;
-            //message = "{" + plugin + "}[" + msg + "] " + function + "()->" + str;
-            if( writeOut || log_console == null )
-            	System.out.println( message );
+            if( !writeOut || log_console != null )
+                message = msg.isEmpty() ? function + "()->" + str : "_" + msg + "_ " + function + "()->" + str;
+            else {
+                message = msg.isEmpty() ? "[" + plugin + "] " + function + "()->" + str : "_" + msg + "_ " + "[" + plugin + "] " + function + "()->" + str;
+                System.out.println(message);
+            }
 
             /*
 			if( deb == 0 ) log_console.log( Level.SEVERE, message );
