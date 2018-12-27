@@ -23,6 +23,10 @@ public class MyClass {
   public MyClass() {
     logSystem = new LogSystem(getLogger(), path + "/../../logs/" + getClass().getSimpleName() + "_log.txt");
     logSystem.prefix = getDescription().getPrefix();
+
+    initFileDirsAndConfig();
+    initMySQL();
+
     logSystem.debug = plugin_options.getNumber("debug.level");
     logSystem.writeOut = plugin_options.getBoolean("debug.write_to_console");
   }
