@@ -21,7 +21,7 @@ Modifing read file, for the create plugin folder if not exists
 example BitsArray:
 byte meta = 18;
 BitsArray bits = new BitsArray(meta);
-int rotateAngle = bits.GetInt(1,3); //0,1,2,3,4,5,6 * 90
+int rotateAngle = bits.GetInt(1,3); //0,1,2,3,4 * 90
 int growth = bits.GetInt(4,7);
 System.out.println("rotateAngle:" + rotateAngle);
 System.out.println("growth:" + growth);

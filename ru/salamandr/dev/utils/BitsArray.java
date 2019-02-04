@@ -20,6 +20,7 @@ public class BitsArray {
     }
     
     public void createFromString(String string_binary) {
+        bits = new ArrayList<Boolean>();
         StringBuilder buffer = new StringBuilder(string_binary);
         String str_bin = buffer.reverse().toString();
         int bits_count = str_bin.length();
