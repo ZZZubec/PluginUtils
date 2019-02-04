@@ -6,6 +6,9 @@ description:
 Wrapper for Mysql and Sqlite, Configuration (yml) for plugins craftbukkit and just Java
 
 Changelog:
+2.0.1
+add BitsArray class
+
 2.0.0
 Finish version
 
@@ -15,7 +18,21 @@ Adding Description to the save configuration file
 Modifing read file, for the create plugin folder if not exists
 
 
-example
+example BitsArray:
+byte meta = 18;
+BitsArray bits = new BitsArray(meta);
+int rotateAngle = bits.GetInt(1,3); //0,1,2,3,4,5,6 * 90
+int growth = bits.GetInt(4,7);
+System.out.println("rotateAngle:" + rotateAngle);
+System.out.println("growth:" + growth);
+
+growth++;
+
+BitsArray newbits = new BitsArray(Integer.toBinaryString(growth) + Integer.toBinaryString(rotateAngle));
+meta = (byte)newbits.GetInt();
+System.out.println("meta:" + meta);
+
+example:
 public class MyClass {
   public SQLSystem sql;
   private FileConfigTree plugin_options;
