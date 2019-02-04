@@ -19,12 +19,21 @@ Modifing read file, for the create plugin folder if not exists
 
 
 example BitsArray:
-byte meta = 18;
+System.out.println("-----------------------");
+byte meta = 23;
 BitsArray bits = new BitsArray(meta);
-int rotateAngle = bits.GetInt(1,3); //0,1,2,3,4 * 90
-int growth = bits.GetInt(4,7);
+int rotateAngle = bits.GetInt(1,2, 0); //0,1,2,3 * 90
+int growth = bits.GetInt(3,7, 2);
 System.out.println("rotateAngle:" + rotateAngle);
 System.out.println("growth:" + growth);
+
+growth++;
+
+BitsArray ba_growth = new BitsArray(growth);
+BitsArray ba_rotate = new BitsArray(rotateAngle);
+BitsArray result = BitsArray.join(ba_rotate, 2, ba_growth );
+meta = (byte)result.GetInt();
+System.out.println("meta:" + result.GetInt());
 
 growth++;
 
